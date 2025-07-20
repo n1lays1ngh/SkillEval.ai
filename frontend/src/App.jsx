@@ -3,8 +3,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import { darkTheme } from './theme'; 
 import Header from './Components/landing/Header';
 import Footer from './Components/landing/Footer';
-import LandingPage from './Pages/LandingPage';
-import AnalyzerPage from './Pages/AnalyzerPage';
+import LandingPage from './pages/LandingPage';
+import AnalyzerPage from './pages/AnalyzerPage';
 
 export default function App() {
   const [showAnalyzer, setShowAnalyzer] = useState(false);
