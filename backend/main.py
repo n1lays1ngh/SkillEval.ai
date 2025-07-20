@@ -1,6 +1,6 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import LLMChain
-from prompts.role_match_prompt import profile_analysis_prompt
+from backend.prompts.role_match_prompt import profile_analysis_prompt
 from fastapi import FastAPI
 from pydantic import BaseModel 
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,18 +9,27 @@ from dotenv import load_dotenv
 from fastapi import HTTPException
 import json 
 from langchain_core.output_parsers import StrOutputParser
-from services.github_data import get_github_data
-from services.roadmap_generation import generate_roadmap_for_gaps
+from backend.services.github_data import get_github_data
+from backend.services.roadmap_generation import generate_roadmap_for_gaps
 from typing import List
-from models import ProfileInput,RoadmapRequest,RoadmapResponse
+from backend.models import ProfileInput,RoadmapRequest,RoadmapResponse
 load_dotenv()
 
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:5173",  # 🌐 For your local Vite development server
+    "https://*.vercel.app",   # 🚀 Allows all Vercel preview deployments (e.g., from Git branches/PRs)
+    # You MUST add your specific Vercel production URL here after your first deployment.
+    # Example: "https://your-project-name.vercel.app",
+    # If you set up a custom domain: "https://www.your-custom-domain.com",
+]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, use specific domain
+    allow_origins=origins,  # In production, use specific domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,20 +44,13 @@ try:
 
     chain = profile_analysis_prompt | llm | StrOutputParser()
 
-    # response = chain.run({
-    #     "role": "Backend Intern",
-    #     "skills": "Python, Flask, SQL",
-    #     "projects": "Blog app with Flask, REST API with SQLite",
-    #     "github_info": "3 repos, 20 stars, top language: Python"
-    # })
-
 except Exception as e:
     llm = None
     chain = None 
     print(f"Error initializing LLM or Chain: {e}")
 
 
-@app.post("/analyze-profile")
+@app.post("/api/analyze-profile")
 async def analyze_profile(data : ProfileInput):
     if not chain:
         raise HTTPException(status_code=500,detail="Chain Does not exist")
@@ -79,14 +81,14 @@ async def analyze_profile(data : ProfileInput):
             detail={"error": "The model returned an invalid format.", "raw_output": response_str}
         )
     
-@app.get("/")
+@app.get("/api/status")
 def check_server_status():
     return {"message":"The server works fine proceed to evaluate your skill status"}
 
 
 
 ### GENERATING ROADMAP ENDPOINT
-@app.post("/generate-roadmap", response_model=RoadmapResponse, tags=["2. Roadmap Generation"])
+@app.post("/api/generate-roadmap", response_model=RoadmapResponse, tags=["2. Roadmap Generation"])
 async def api_generate_roadmap(request: RoadmapRequest):
     if not request.gaps:
         raise HTTPException(

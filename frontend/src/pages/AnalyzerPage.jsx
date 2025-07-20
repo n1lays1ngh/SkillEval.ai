@@ -7,7 +7,7 @@ import RoadmapView from '../Components/analyzer/RoadmapView';
 import Loader from '../Components/common/Loader';
 import ErrorDisplay from '../Components/common/ErrorDisplay';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+// const API_BASE_URL = 'http://127.0.0.1:8000';
 
 const AnalyzerPage = ({ onGoHome }) => {
   const [step, setStep] = useState(0);
@@ -28,7 +28,7 @@ const AnalyzerPage = ({ onGoHome }) => {
     setError(null);
     setAnalysisResult(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/analyze-profile`, formData);
+      const response = await axios.post(`/api/analyze-profile`, formData);
       setAnalysisResult(response.data);
       setStep(1);
     } catch (err) {
@@ -49,7 +49,7 @@ const AnalyzerPage = ({ onGoHome }) => {
     setRoadmapResult(null);
     const payload = { role: formData.role, gaps: analysisResult.skill_gaps };
     try {
-      const response = await axios.post(`${API_BASE_URL}/generate-roadmap`, payload);
+      const response = await axios.post(`/api/generate-roadmap`, payload);
       setRoadmapResult(response.data.roadmap);
       setStep(2);
     } catch (err) {
