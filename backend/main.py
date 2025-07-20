@@ -10,8 +10,11 @@ from fastapi import HTTPException
 import json 
 from langchain_core.output_parsers import StrOutputParser
 from services.github_data import get_github_data
-
+from services.roadmap_generation import generate_roadmap_for_gaps
+from typing import List
+from models import ProfileInput,RoadmapRequest,RoadmapResponse
 load_dotenv()
+
 
 app = FastAPI()
 
@@ -45,13 +48,6 @@ except Exception as e:
     print(f"Error initializing LLM or Chain: {e}")
 
 
-class ProfileInput(BaseModel):
-    role: str
-    skills: str
-    projects: str
-    github_username: str
-
-
 @app.post("/analyze-profile")
 async def analyze_profile(data : ProfileInput):
     if not chain:
@@ -83,8 +79,35 @@ async def analyze_profile(data : ProfileInput):
             detail={"error": "The model returned an invalid format.", "raw_output": response_str}
         )
     
-
 @app.get("/")
 def check_server_status():
     return {"message":"The server works fine proceed to evaluate your skill status"}
 
+
+
+### GENERATING ROADMAP ENDPOINT
+@app.post("/generate-roadmap", response_model=RoadmapResponse, tags=["2. Roadmap Generation"])
+async def api_generate_roadmap(request: RoadmapRequest):
+    if not request.gaps:
+        raise HTTPException(
+            status_code=400,
+            detail="The 'gaps' list cannot be empty. Please provide at least one skill gap."
+        )
+
+    try:
+        # This is where we call our new LangChain-powered function
+        # from roadmap_generator.py
+        generated_roadmap = generate_roadmap_for_gaps(
+            role=request.role,
+            gaps=request.gaps
+        )
+        return RoadmapResponse(roadmap=generated_roadmap)
+
+    except Exception as e:
+        # Basic error handling to catch issues during generation
+        print(f"An error occurred during roadmap generation: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"An internal error occurred while generating the roadmap. Details: {str(e)}"
+        )
+    
