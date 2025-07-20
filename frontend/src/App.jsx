@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ThemeProvider } from '@mui/material/styles'; // Import ThemeProvider
-import { darkTheme } from './theme'; // Import your new theme
+import { ThemeProvider } from '@mui/material/styles'; 
+import { darkTheme } from './theme'; 
 import Header from './Components/landing/Header';
 import Footer from './Components/landing/Footer';
 import LandingPage from './Pages/LandingPage';
@@ -15,7 +15,7 @@ export default function App() {
   };
 
   return (
-    // Wrap the entire app in the ThemeProvider
+    
     <ThemeProvider theme={darkTheme}>
       <div className="bg-slate-900 min-h-screen font-sans text-gray-300">
         <Header onHomeClick={goToHome} />

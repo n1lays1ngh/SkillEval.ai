@@ -7,7 +7,6 @@ import StepButton from '@mui/material/StepButton';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
-// --- Topic Component ---
 const Topic = ({ title, justification, actionableSteps }) => {
   return (
     <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
@@ -96,7 +95,7 @@ const RoadmapView = ({ roadmap, handleStartOver }) => {
 
     try {
       let jsonString = roadmap;
-      // Clean the string to ensure it's valid JSON
+      
       const firstBrace = jsonString.indexOf('{');
       const lastBrace = jsonString.lastIndexOf('}');
 
@@ -108,7 +107,7 @@ const RoadmapView = ({ roadmap, handleStartOver }) => {
       
       const parsedData = JSON.parse(jsonString);
 
-      // --- DEFENSIVE CHECK 2: Validate the parsed data structure ---
+      
       if (!parsedData || !Array.isArray(parsedData.modules)) {
         throw new Error("Parsed JSON is missing the 'modules' array.");
       }
@@ -123,7 +122,7 @@ const RoadmapView = ({ roadmap, handleStartOver }) => {
 
   const [selectedModule, setSelectedModule] = useState(0);
 
-  // --- DEFENSIVE CHECK 3: Render an error UI if parsing failed ---
+  
   if (roadmapData.error) {
       return (
           <div className="text-center text-red-400 p-8 bg-slate-800 rounded-lg border border-red-700">
@@ -147,7 +146,7 @@ const RoadmapView = ({ roadmap, handleStartOver }) => {
         <p className="text-center text-lg text-gray-400 mt-2 max-w-3xl mx-auto">{roadmapData.introduction}</p>
       </div>
       
-      {/* --- NEW MUI STEPPER NAVIGATION --- */}
+      
       <ThemeProvider theme={darkTheme}>
         <Box sx={{ width: '100%', bgcolor: 'transparent', mb: 4 }}>
             <Stepper nonLinear activeStep={selectedModule} alternativeLabel>
@@ -162,7 +161,7 @@ const RoadmapView = ({ roadmap, handleStartOver }) => {
         </Box>
       </ThemeProvider>
       
-      {/* --- MODULE DETAILS DISPLAY --- */}
+      
       <div>
           {roadmapData.modules.length > 0 && roadmapData.modules[selectedModule] ? (
             <ModuleDetails module={roadmapData.modules[selectedModule]} />
