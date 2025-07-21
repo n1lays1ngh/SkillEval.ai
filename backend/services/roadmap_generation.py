@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 load_dotenv()
-from prompts.roadmap_generation_prompt import roadmap_gen_prompt
+from backend.prompts.roadmap_generation_prompt import roadmap_gen_prompt
 
 if "GOOGLE_API_KEY" not in os.environ:
     print("Warning: GOOGLE_API_KEY not set. Please set the environment variable.")
