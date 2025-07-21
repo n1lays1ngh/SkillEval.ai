@@ -45,10 +45,10 @@ Built using FastAPI + LangChain on the backend and React + Tailwind CSS on the f
 ![Homepage](assets/Homepage.png)
 *SkillCoachAI home page - clean input form and powerful feedback engine*
 
-![Form](assets/FormPage.png)
+![Form](assets/Form.png)
 *Simple form to input your GitHub profile, resume, and project details before starting the evaluation*
 
-![Analysis](assets/AnalysisPage.png)
+![Analysis](assets/Analysis%20Page.png)
 *Detailed readiness score and personalized skill gap analysis generated from your GitHub and resume*
 
 ![Roadmap](assets/RoadmapPage.png)
